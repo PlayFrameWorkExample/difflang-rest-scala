@@ -1,0 +1,42 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /                           com.difflang.controllers.HomeController.index
+# An example controller showing how to use dependency injection
+GET     /count                      com.difflang.controllers.CountController.count
+# An example controller showing how to write asynchronous code
+GET     /message                    com.difflang.controllers.AsyncController.message
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+
+
+#Hospital RESTfull
+#GET                 /api/hospitals/?page=&limit=                         com.difflang.controllers.HospitalController.list(page: Int ?= 1, limit: Int ?= 10)
+GET                 /api/hospitals                                        com.difflang.controllers.HospitalController.findAll(page:Int ?=1 , limit:Int ?=5,sort:Int ?= -1)
+#GET                 /api/hospitals/test                                  com.difflang.controllers.HospitalController.list(page: Int, limit: Int,sort:Int)
+GET                 /api/hospitals/gethospitalbyid/:id                    com.difflang.controllers.HospitalController.findById(id: String)
+GET                 /api/hospitals/gettotal                               com.difflang.controllers.HospitalController.getTotalHospital
+GET                 /api/hospitals/getname/:name                          com.difflang.controllers.HospitalController.findByName(name:String)
+POST                /api/hospitals                                        com.difflang.controllers.HospitalController.create
+DELETE              /api/hospitals/:id                                    com.difflang.controllers.HospitalController.delete(id: String)
+PUT                 /api/hospitals/:id                                    com.difflang.controllers.HospitalController.update(id: String)
+
+# Translator RESTfull
+GET                 /api/translators                      com.difflang.controllers.TranslatorController.findAll
+GET                 /api/translators/:id                  com.difflang.controllers.TranslatorController.findById(id: String)
+POST                /api/translators                      com.difflang.controllers.TranslatorController.create
+DELETE              /api/translators/:id                  com.difflang.controllers.TranslatorController.delete(id: String)
+PUT                 /api/translators/:id                  com.difflang.controllers.TranslatorController.update(id: String)
+
+# User RESTfull
+
+GET                 /api/users                      com.difflang.controllers.UserController.findAll
+GET                 /api/users/:id                  com.difflang.controllers.UserController.findById(id: String)
+GET                 /api/users/getuser             com.difflang.controllers.UserController.getTotalUser
+POST                /api/users                     com.difflang.controllers.UserController.create
+DELETE              /api/users/:id                  com.difflang.controllers.UserController.delete(id: String)
+PUT                 /api/users/:id                  com.difflang.controllers.UserController.update(id: String)
