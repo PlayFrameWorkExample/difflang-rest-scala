@@ -15,18 +15,16 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 
 #Hospital RESTfull
-#GET                 /api/hospitals/?page=&limit=                         com.difflang.controllers.HospitalController.list(page: Int ?= 1, limit: Int ?= 10)
-GET                 /api/hospitals                                        com.difflang.controllers.HospitalController.findAll(page:Int ?=1 , limit:Int ?=5,sort:Int ?= -1)
-#GET                 /api/hospitals/test                                  com.difflang.controllers.HospitalController.list(page: Int, limit: Int,sort:Int)
-GET                 /api/hospitals/gethospitalbyid/:id                    com.difflang.controllers.HospitalController.findById(id: String)
-GET                 /api/hospitals/gettotal                               com.difflang.controllers.HospitalController.getTotalHospital
-GET                 /api/hospitals/getname/:name                          com.difflang.controllers.HospitalController.findByName(name:String)
-POST                /api/hospitals                                        com.difflang.controllers.HospitalController.create
-DELETE              /api/hospitals/:id                                    com.difflang.controllers.HospitalController.delete(id: String)
-PUT                 /api/hospitals/:id                                    com.difflang.controllers.HospitalController.update(id: String)
+GET                 /api/hospitals                      com.difflang.controllers.HospitalController.findAll(page:Int ?=1 , limit:Int ?=5,sort: String ?="EMAIL")
+GET                 /api/hospitals/gethospitalbyid/:id  com.difflang.controllers.HospitalController.findById(id: String)
+GET                 /api/hospitals/gettotal             com.difflang.controllers.HospitalController.getTotalHospital
+GET                 /api/hospitals/getname/:name        com.difflang.controllers.HospitalController.findByName(name:String)
+POST                /api/hospitals                      com.difflang.controllers.HospitalController.create
+DELETE              /api/hospitals/:id                  com.difflang.controllers.HospitalController.delete(id: String)
+PUT                 /api/hospitals/:id                  com.difflang.controllers.HospitalController.update(id: String)
 
 # Translator RESTfull
-GET                 /api/translators                      com.difflang.controllers.TranslatorController.findAll
+GET                 /api/translators                      com.difflang.controllers.TranslatorController.findAll(page:Int ?=1 , limit:Int ?=5,sort: String ?="EMAIL")
 GET                 /api/translators/:id                  com.difflang.controllers.TranslatorController.findById(id: String)
 POST                /api/translators                      com.difflang.controllers.TranslatorController.create
 DELETE              /api/translators/:id                  com.difflang.controllers.TranslatorController.delete(id: String)
@@ -34,7 +32,7 @@ PUT                 /api/translators/:id                  com.difflang.controlle
 
 # User RESTfull
 
-GET                 /api/users                      com.difflang.controllers.UserController.findAll
+GET                 /api/users                      com.difflang.controllers.UserController.findAll(page:Int ?=1 , limit:Int ?=5,sort: String ?="EMAIL")
 GET                 /api/users/:id                  com.difflang.controllers.UserController.findById(id: String)
 GET                 /api/users/getuser             com.difflang.controllers.UserController.getTotalUser
 POST                /api/users                     com.difflang.controllers.UserController.create

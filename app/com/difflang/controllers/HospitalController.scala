@@ -1,6 +1,6 @@
 package com.difflang.controllers
 
-import com.difflang.utilities.Pagination
+import com.difflang.utilities.{FilterData, Pagination}
 import play.modules.reactivemongo.json._
 import javax.inject.Inject
 import com.difflang.models.Hospital
@@ -37,11 +37,12 @@ class HospitalController @Inject()(val reactiveMongoApi: ReactiveMongoApi) exten
   }*/
 
   //TODO GET ALL HOSPITAL
-  def findAll(page:Int , limit:Int,sort:Int) = Action.async {
+  def findAll(page:Int , limit:Int,sort:String) = Action.async {
     implicit request =>
+      val sortData = new FilterData(sort)
       val getCount = Await.result(hospitalService.getTotalHospital(),10 seconds)
       val pagination = new Pagination(page, limit, getCount)
-      hospitalService.findAllHospital(pagination,sort).map(hospital => Ok(Json.obj("Data" -> Json.toJson(hospital),"PAGINATION"-> Json.toJson(pagination),"STATUS" -> "DATA FOUND" )))
+      hospitalService.findAllHospital(pagination,sortData).map(hospital => Ok(Json.obj("Data" -> Json.toJson(hospital),"PAGINATION"-> Json.toJson(pagination),"STATUS" -> "DATA FOUND" )))
   }
 
 

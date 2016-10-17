@@ -4,21 +4,27 @@ import javax.inject.Inject
 
 
 import com.difflang.models.User
+import com.difflang.utilities.{Pagination, FilterData}
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
 import reactivemongo.bson.{BSONObjectID, BSONDocument}
 import com.difflang.services.UserRepositoryImpl
-import views.html.helper.select
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class UserController @Inject()(val reactiveMongoApi: ReactiveMongoApi) extends Controller with MongoController with ReactiveMongoComponents{
 
   def userRepo=new UserRepositoryImpl(reactiveMongoApi)
 
-  def findAll= Action.async{
+  def findAll(page:Int, size:Int,sort:String)= Action.async{
     implicit request=>
-      userRepo.find().map(users => Ok(Json.toJson(users)))
+      val getCount =Await.result(userRepo.getTotalUser(),10 seconds)
+      val userFilter = new FilterData(sort)
+      val pagination = new Pagination(page,size,getCount)
+      userRepo.find(pagination,userFilter).map(users => Ok(Json.obj("Data" -> Json.toJson(users),"PAGINATION"-> Json.toJson(pagination),"STATUS" -> "DATA FOUND" )))
   }
 
   def findById(id: String) = Action.async {

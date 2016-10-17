@@ -2,6 +2,7 @@ package com.difflang.controllers
 
 import javax.inject.Inject
 
+import com.difflang.utilities.{Pagination, FilterData}
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
@@ -9,11 +10,12 @@ import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import com.difflang.services.TranslatorRepoImpl
 import com.difflang.models.Translator
 import play.modules.reactivemongo.json._
+import scala.concurrent.Await
+import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.postfixOps
 
-/**
-  * Created by acer on 10/11/2016.
-  */
+
 class TranslatorController @Inject()(val reactiveMongoApi: ReactiveMongoApi) extends Controller
   with MongoController with ReactiveMongoComponents{
 
@@ -27,9 +29,12 @@ class TranslatorController @Inject()(val reactiveMongoApi: ReactiveMongoApi) ext
   }
 
   // TODO GET ALL TRANSLATOR
-  def findAll = Action.async {
+  def findAll(page:Int , limit:Int,sort:String) = Action.async {
     implicit request =>
-      translatorService.find().map(translator => Ok(Json.toJson(translator)))
+      val sortData = new FilterData(sort)
+      val getCount = Await.result(translatorService.getTotalTranslator(),10 seconds)
+      val pagination = new Pagination(page, limit, getCount)
+      translatorService.find(pagination,sortData).map(translator => Ok(Json.obj("Data" -> Json.toJson(translator),"PAGINATION"-> Json.toJson(pagination),"STATUS" -> "DATA FOUND" )))
   }
 
   // TODO FIND TRANSLATOR BY ID

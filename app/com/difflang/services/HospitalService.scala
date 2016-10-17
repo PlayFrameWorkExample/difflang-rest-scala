@@ -1,7 +1,7 @@
 package com.difflang.services
 
 import javax.inject.Inject
-import com.difflang.utilities.Pagination
+import com.difflang.utilities.{FilterData, Pagination}
 
 import com.difflang.models.Hospital
 import play.api.libs.json.{Json, JsObject}
@@ -16,7 +16,7 @@ import play.modules.reactivemongo.json._
 
 trait HospitalRepository {
 
-  def findAllHospital(pagination: Pagination , sort:Int)(implicit ec: ExecutionContext): Future[List[JsObject]]
+  def findAllHospital(pagination: Pagination, sort: FilterData)(implicit ec: ExecutionContext): Future[List[JsObject]]
   def findHospitalById(id: BSONDocument)(implicit ec: ExecutionContext): Future[Option[JsObject]]
   def findHospitalByName(name:String)(implicit  ec:ExecutionContext):Future[List[JsObject]]
   def addHospital(hospital: Hospital)(implicit ec: ExecutionContext): Future[WriteResult]
@@ -24,14 +24,9 @@ trait HospitalRepository {
   def updateHospital(id: BSONDocument, update: Hospital)(implicit ec: ExecutionContext): Future[WriteResult]
   def getTotalHospital()(implicit ec:ExecutionContext):Future[Int]
 
-
-  /*def list( pagination: Pagination , sort:Int)(implicit ec: ExecutionContext): Future[List[JsObject]]*/
 }
 
-//
 class HospitalRepositoryImpl @Inject() (reactiveMongoApi: ReactiveMongoApi) extends HospitalRepository{
-
-
 
   def collection (implicit ec: ExecutionContext)  = reactiveMongoApi.database.map(db => db.collection[JSONCollection]("HOSPITALS"))
 
@@ -43,10 +38,10 @@ class HospitalRepositoryImpl @Inject() (reactiveMongoApi: ReactiveMongoApi) exte
 
 
   //TODO GET ALL HOSPITAL
-  override def findAllHospital(pagination: Pagination , sort:Int)(implicit ec: ExecutionContext): Future[List[JsObject]] = {
-    val genericQueryBuilder = collection.map(_.find(Json.obj()).options(QueryOpts(pagination.offset)).sort(Json.obj("NAME" -> sort)))
+  override def findAllHospital(pagination: Pagination, sort: FilterData)(implicit ec: ExecutionContext): Future[List[JsObject]] = {
+    val genericQueryBuilder = collection.map(_.find(Json.obj()).options(QueryOpts(pagination.skip)).sort(Json.obj(sort.KEY -> sort.VALUE)))
     val cursor = genericQueryBuilder.map(_.cursor[JsObject](ReadPreference.Primary))
-    cursor.flatMap(_.collect[List](pagination.limit))
+    cursor.flatMap(_.collect[List](pagination.Size))
   }
 
   //TODO GET HOSPITAL BY ID
@@ -54,13 +49,9 @@ class HospitalRepositoryImpl @Inject() (reactiveMongoApi: ReactiveMongoApi) exte
     collection.flatMap(_.find(id).one[JsObject])
   }
 
-
   //TODO FIND HOSPITAL BY NAME
   override def  findHospitalByName(name:String)(implicit ec:ExecutionContext):Future[List[JsObject]]={
-    val arrName: Array[String] = name.split("%20")
-
-    var finalName = arrName(0).concat(" ").concat(arrName(0))
-    val genericQueryBuilder = collection.map(_.find(Json.obj("NAME" -> finalName)))
+    val genericQueryBuilder = collection.map(_.find(Json.obj("NAME" -> name)))
     val cursor = genericQueryBuilder.map(_.cursor[JsObject](ReadPreference.Primary))
     cursor.flatMap(_.collect[List]())
   }
