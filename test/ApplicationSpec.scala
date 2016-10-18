@@ -36,7 +36,6 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
       contentAsString(route(app, FakeRequest(GET, "/count")).get) mustBe "1"
       contentAsString(route(app, FakeRequest(GET, "/count")).get) mustBe "2"
     }
-
   }
 
 }

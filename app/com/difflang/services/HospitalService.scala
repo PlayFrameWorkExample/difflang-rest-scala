@@ -39,9 +39,13 @@ class HospitalRepositoryImpl @Inject() (reactiveMongoApi: ReactiveMongoApi) exte
 
   //TODO GET ALL HOSPITAL
   override def findAllHospital(pagination: Pagination, sort: FilterData)(implicit ec: ExecutionContext): Future[List[JsObject]] = {
+
     val genericQueryBuilder = collection.map(_.find(Json.obj()).options(QueryOpts(pagination.skip)).sort(Json.obj(sort.KEY -> sort.VALUE)))
     val cursor = genericQueryBuilder.map(_.cursor[JsObject](ReadPreference.Primary))
     cursor.flatMap(_.collect[List](pagination.Size))
+   /* val genericeQueryBuilder = collection.map(_.find(Json.obj()).options(QueryOpts(pagination.skip)).sort(Json.obj(sort.KEY -> sort.VALUE)))
+    val cursor = genericeQueryBuilder.map(_.cursor[JsObject](ReadPreference.primary))
+    cursor.flatMap(_.collect[List](pagination.Size))*/
   }
 
   //TODO GET HOSPITAL BY ID
